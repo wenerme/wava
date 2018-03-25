@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wava-util</artifactId>
-    <name>Wava Utility</name>
+    <name>Wava utility</name>
 
     <dependencies>
         <dependency>
