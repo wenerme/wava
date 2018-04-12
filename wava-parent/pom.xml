@@ -29,7 +29,7 @@
             <dependency>
                 <groupId>com.github.wenerme.wava</groupId>
                 <artifactId>wava-util</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.3-SNAPSHOT</version>
             </dependency>
 
             <!-- util -->
@@ -58,6 +58,11 @@
             <dependency>
                 <groupId>org.jodd</groupId>
                 <artifactId>jodd-core</artifactId>
+                <version>${jodd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jodd</groupId>
+                <artifactId>jodd-bean</artifactId>
                 <version>${jodd.version}</version>
             </dependency>
 
@@ -252,7 +257,7 @@
         </repository>
     </distributionManagement>
 
-    <description>GraphQL with Java</description>
+    <description>Wener and Java</description>
     <url>https://github.com/wenerme/wava</url>
 
     <licenses>

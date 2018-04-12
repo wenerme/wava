@@ -12,69 +12,51 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * JSON 工具类
+ * JSON utils
  *
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 16/12/17
  */
 public interface JSON {
 
-  /**
-   * @return 是否为合法的 json 对象字符串
-   */
-  static boolean isValidObject(String json) {
-    if (json == null || json.length() == 0) {
-      return false;
-    }
-    try {
-      JsonNode node = Holder.MAPPER.readTree(json);
-      return node.isObject();
-    } catch (IOException e) {
-      // ignored
-    }
-    return false;
+  /** Create a helper */
+  static JSON.Helper help(ObjectMapper mapper) {
+    return () -> mapper;
   }
 
-  /**
-   * @return null for invalid json
-   */
+  /** @return Check is this string represent a JSON object */
+  static boolean isValidObject(String json) {
+    return Holder.HELPER.isValidObject(json);
+  }
+
+  /** @return null for invalid json */
   @Nullable
   static JsonNodeType getJsonType(String json) {
-    if (json == null || json.length() == 0) {
-      return null;
-    }
-    try {
-      JsonNode node = Holder.MAPPER.readTree(json);
-      return node.getNodeType();
-    } catch (IOException e) {
-      // ignored
-    }
-    return null;
+    return Holder.HELPER.getJsonType(json);
   }
 
   static Map<String, Object> toMap(String json) throws IOException {
-    return Holder.MAPPER.readValue(json, Holder.TYPE_REF_MAP_STRING_OBJECT);
+    return Holder.HELPER.toMap(json);
   }
 
   static String stringify(Object o) {
-    return stringify(o, false);
+    return Holder.HELPER.stringify(o, false);
   }
 
   static byte[] bytify(Object o) {
-    return bytify(o, false);
+    return Holder.HELPER.bytify(o, false);
   }
 
   static byte[] bytify(Object o, boolean pretty) {
     try {
       if (pretty) {
-        return Holder.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsBytes(o);
+        return Holder.PRETTY_WRITER.writeValueAsBytes(o);
       } else {
         return Holder.MAPPER.writeValueAsBytes(o);
       }
@@ -86,7 +68,7 @@ public interface JSON {
   static String stringify(Object o, boolean pretty) {
     try {
       if (pretty) {
-        return Holder.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(o);
+        return Holder.PRETTY_WRITER.writeValueAsString(o);
       } else {
         return Holder.MAPPER.writeValueAsString(o);
       }
@@ -96,64 +78,141 @@ public interface JSON {
   }
 
   static <T> T parse(String json, Class<T> type) {
-    try {
-      return Holder.MAPPER.readValue(json, type);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return Holder.HELPER.parse(json, type);
   }
 
   static <T> T parse(byte[] json, Class<T> type) {
-    try {
-      return Holder.MAPPER.readValue(json, type);
-    } catch (IOException e) {
+    return Holder.HELPER.parse(json, type);
+  }
+
+  /** @return Shared writer, this is immutable */
+  static ObjectWriter writer() {
+    return Holder.HELPER.writer();
+  }
+
+  /** @return Shared reader, this is immutable */
+  static ObjectReader reader() {
+    return Holder.HELPER.reader();
+  }
+
+  /** Helper wrapper of {@link ObjectMapper} */
+  @FunctionalInterface
+  interface Helper {
+    /** @return Shared writer, this is immutable */
+    default ObjectWriter writer() {
+      return mapper().writer();
+    }
+
+    /** @return Shared reader, this is immutable */
+    default ObjectReader reader() {
+      return mapper().reader();
+    }
+
+    ObjectMapper mapper();
+
+    /** @return Check is this string represent a JSON object */
+    default boolean isValidObject(String json) {
+      if (json == null || json.length() == 0) {
+        return false;
+      }
+      try {
+        JsonNode node = mapper().readTree(json);
+        return node.isObject();
+      } catch (IOException e) {
+        // ignored
+      }
+      return false;
+    }
+
+    /** @return null for invalid json */
+    @Nullable
+    default JsonNodeType getJsonType(String json) {
+      if (json == null || json.length() == 0) {
+        return null;
+      }
+      try {
+        JsonNode node = mapper().readTree(json);
+        return node.getNodeType();
+      } catch (IOException e) {
+        // ignored
+      }
+      return null;
+    }
+
+    default Map<String, Object> toMap(String json) throws IOException {
+      return mapper().readValue(json, Holder.TYPE_REF_MAP_STRING_OBJECT);
+    }
+
+    default String stringify(Object o) {
+      return stringify(o, false);
+    }
+
+    default byte[] bytify(Object o) {
+      return bytify(o, false);
+    }
+
+    default byte[] bytify(Object o, boolean pretty) {
+      try {
+        if (pretty) {
+          return mapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(o);
+        } else {
+          return mapper().writeValueAsBytes(o);
+        }
+      } catch (JsonProcessingException e) {
+        throw throwException(e);
+      }
+    }
+
+    default String stringify(Object o, boolean pretty) {
+      try {
+        if (pretty) {
+          return mapper().writerWithDefaultPrettyPrinter().writeValueAsString(o);
+        } else {
+          return mapper().writeValueAsString(o);
+        }
+      } catch (JsonProcessingException e) {
+        throw throwException(e);
+      }
+    }
+
+    default <T> T parse(String json, Class<T> type) {
+      try {
+        return mapper().readValue(json, type);
+      } catch (IOException e) {
+        throw throwException(e);
+      }
+    }
+
+    default <T> T parse(byte[] json, Class<T> type) {
+      try {
+        return mapper().readValue(json, type);
+      } catch (IOException e) {
+        throw throwException(e);
+      }
+    }
+
+    default RuntimeException throwException(Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  //    /**
-  //     * If {@link ObjectMapper} is not required, use {@link #reader()} or {@link #writer()}
-  // instead.
-  //     *
-  //     * @return The ObjectMapper used by {@link JSON}, the returned mapper is immutable,{@link
-  // ObjectMapper#copy()} first
-  //     * if you wanner change.
-  //     * @see <a href=http://stackoverflow.com/a/3909846/1870054>How to share ObjectMapper</a>
-  //     */
-  //    static ObjectMapper mapper() {
-  //        return Holder.IMMUTABLE;
-  //    }
-
-  /**
-   * @return Shared writer, this is immutable
-   */
-  static ObjectWriter writer() {
-    return Holder.MAPPER.writer();
-  }
-
-  /**
-   * @return Shared reader, this is immutable
-   */
-  static ObjectReader reader() {
-    return Holder.MAPPER.reader();
   }
 
   class Holder {
 
     private static final ObjectMapper MAPPER =
-      new ObjectMapper()
-        .findAndRegisterModules()
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .configure(SerializationFeature.WRITE_ENUMS_USING_INDEX, true);
+        new ObjectMapper()
+            .findAndRegisterModules()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final JSON.Helper HELPER = help(MAPPER);
+    private static final ObjectWriter PRETTY_WRITER = MAPPER.writerWithDefaultPrettyPrinter();
     private static final TypeReference<Map<String, Object>> TYPE_REF_MAP_STRING_OBJECT =
-      new TypeReference<Map<String, Object>>() {
-      };
+        new TypeReference<Map<String, Object>>() {};
   }
 
   /**
-   * 将节点保存为字符串, {@link com.fasterxml.jackson.annotation.JsonRawValue} 只作用于序列化, 该反序列化器相当于该操作的反向操作.
-   * 使用注解 {@code @JsonDeserialize(using = JSON.JsonRawValueDeserializer.class)}
+   * Deserialize the node to a string field, reverse of the {@link
+   * com.fasterxml.jackson.annotation.JsonRawValue} operation. Usage {@code @JsonDeserialize(using =
+   * JSON.JsonRawValueDeserializer.class)}
    */
   class JsonRawValueDeserializer extends JsonDeserializer<String> {
 

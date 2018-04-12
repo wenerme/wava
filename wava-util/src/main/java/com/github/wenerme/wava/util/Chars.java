@@ -1,21 +1,18 @@
 package com.github.wenerme.wava.util;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Charsets;
 import com.google.common.base.Converter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.io.CharStreams;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 /**
+ *
+ *
  * <ul>
- * <li>定义常用的字符
- * <li>定义分割和合并
- * <li>定义常用操作
+ *   <li>Common chars
+ *   <li>Splitter & Joiner
+ *   <li>String ops
  * </ul>
  *
  * @author <a href=http://github.com/wenerme>wener</a>
@@ -23,12 +20,20 @@ import java.nio.charset.StandardCharsets;
  */
 public interface Chars {
 
-  static String toString(InputStream is) throws IOException {
-    return CharStreams.toString(new InputStreamReader(is, Charsets.UTF_8));
-  }
-
   static String toString(byte[] bytes) {
     return new String(bytes, StandardCharsets.UTF_8);
+  }
+
+  static boolean containsIgnoreCase(String s, String search) {
+    if (s == null || search == null) return false;
+
+    final int length = search.length();
+    if (length == 0) return true;
+
+    for (int i = s.length() - length; i >= 0; i--) {
+      if (s.regionMatches(true, i, search, 0, length)) return true;
+    }
+    return false;
   }
 
   static int startWithAny(String s, String... matches) {
@@ -124,6 +129,6 @@ public interface Chars {
     private static final Joiner JO_EQUAL = Joiner.on('=');
 
     private static final Converter<String, String> UPPER_CAMEL_UNDERSCORE =
-      CaseFormat.UPPER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE);
+        CaseFormat.UPPER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE);
   }
 }

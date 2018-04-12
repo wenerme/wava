@@ -5,7 +5,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 /**
- * 汉字辅助操作
+ *
+ *
+ * <ul>
+ *   <li>Common word
+ *   <li>CharMatcher
+ *   <li>Splitter & Joiner
+ * </ul>
  *
  * @author <a href=http://github.com/wenerme>wener</a>
  * @see <a href="https://zh.wikipedia.org/wiki/中文数字">Wikipedia: 中文数字</a>
@@ -13,44 +19,32 @@ import com.google.common.base.Splitter;
  */
 public interface Chinesese {
 
-  /**
-   * 中文逗号
-   */
+  /** 中文逗号 */
   static char comma() {
     return Holder.COMMA;
   }
 
-  /**
-   * 小写的中文数字
-   */
+  /** 小写的中文数字 */
   static String upperNumerals() {
     return Holder.UPPER_NUMERALS;
   }
 
-  /**
-   * 大写的中文数字
-   */
+  /** 大写的中文数字 */
   static String lowerNumerals() {
     return Holder.LOWER_NUMERALS;
   }
 
-  /**
-   * 中文数字
-   */
+  /** 中文数字 */
   static String numerals() {
     return Holder.NUMERALS;
   }
 
-  /**
-   * 判断字符是否为中文
-   */
+  /** 判断字符是否为中文 */
   static boolean isChinese(int c) {
     return Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN;
   }
 
-  /**
-   * 判断字符串是否为中文
-   */
+  /** 判断字符串是否为中文 */
   static boolean isChinese(CharSequence s) {
     return s.codePoints().allMatch(Chinesese::isChinese);
   }
@@ -95,7 +89,7 @@ public interface Chinesese {
     static final CharMatcher HAN_MATCHER = unicodeScriptMatcher(Character.UnicodeScript.HAN);
     static final char COMMA = '，';
     static final Splitter SP_COMMA =
-      Splitter.on(Chinesese.comma()).omitEmptyStrings().trimResults();
+        Splitter.on(Chinesese.comma()).omitEmptyStrings().trimResults();
     static final Joiner JO_COMMA = Joiner.on(Chinesese.comma());
   }
 }

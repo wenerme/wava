@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Lambdas 辅助操作函数
+ * Lambdas utils
  *
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 16/6/1
@@ -53,15 +53,13 @@ public interface Lambdas {
   //        return v == Holder.EMPTY_CONSUMER;
   //    }
 
-  /**
-   * Create stream for iterable
-   */
+  /** Create stream for iterable */
   static <T> Stream<T> stream(Iterable<T> iterable) {
     if (iterable == null) {
       return Stream.empty();
     }
     return StreamSupport.stream(
-      Spliterators.spliteratorUnknownSize(iterable.iterator(), Spliterator.ORDERED), false);
+        Spliterators.spliteratorUnknownSize(iterable.iterator(), Spliterator.ORDERED), false);
   }
 
   static <T> Stream<T> stream(Iterator<T> iterator) {
@@ -69,7 +67,7 @@ public interface Lambdas {
       return Stream.empty();
     }
     return StreamSupport.stream(
-      Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
+        Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
   }
 
   static <T> Stream<T> stream(Collection<T> collection) {
@@ -79,9 +77,7 @@ public interface Lambdas {
     return collection.stream();
   }
 
-  /**
-   * Null-safe foreach
-   */
+  /** Null-safe foreach */
   static <T, C extends Iterable<T>> C each(C t, Consumer<? super T> action) {
     if (t != null) {
       t.forEach(action);
@@ -89,9 +85,7 @@ public interface Lambdas {
     return t;
   }
 
-  /**
-   * Null-safe foreach
-   */
+  /** Null-safe foreach */
   static <C> C[] each(C[] t, Consumer<? super C> action) {
     if (t != null) {
       for (C c : t) {
@@ -127,9 +121,7 @@ public interface Lambdas {
     return Optional.empty();
   }
 
-  /**
-   * Null-safe action
-   */
+  /** Null-safe action */
   static <V> V accept(V v, Consumer<? super V> action) {
     if (v != null) {
       action.accept(v);
@@ -137,9 +129,7 @@ public interface Lambdas {
     return v;
   }
 
-  /**
-   * Null-safe function
-   */
+  /** Null-safe function */
   static <V, R> R apply(V v, Function<? super V, R> action) {
     if (v == null) {
       return null;
@@ -154,9 +144,7 @@ public interface Lambdas {
     return action.apply(v);
   }
 
-  /**
-   * Same as {@link Function#identity()}
-   */
+  /** Same as {@link Function#identity()} */
   static <T> Function<T, T> identity(Consumer<? super T> action) {
     return v -> {
       action.accept(v);
@@ -194,9 +182,7 @@ public interface Lambdas {
     return Optional.empty();
   }
 
-  /**
-   * 因为 Java 8 的 Optional 没有 orElse + Optional 的操作, 使得拼接多个 Optional 的时候很麻烦
-   */
+  /** 因为 Java 8 的 Optional 没有 orElse + Optional 的操作, 使得拼接多个 Optional 的时候很麻烦 */
   @SafeVarargs
   static <T> Optional<T> first(Supplier<Optional<T>>... suppliers) {
     for (Supplier<Optional<T>> supplier : suppliers) {
@@ -224,9 +210,7 @@ public interface Lambdas {
 
   class Holder {
 
-    private static final Consumer EMPTY_CONSUMER = v -> {
-    };
-    private static final BiConsumer EMPTY_BI_CONSUMER = (a, b) -> {
-    };
+    private static final Consumer EMPTY_CONSUMER = v -> {};
+    private static final BiConsumer EMPTY_BI_CONSUMER = (a, b) -> {};
   }
 }
