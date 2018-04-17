@@ -45,6 +45,18 @@ public interface JSON {
     return Holder.HELPER.toMap(json);
   }
 
+  static <T> T toObject(Object source, Class<T> type) throws IOException {
+    return Holder.HELPER.toObject(source, type);
+  }
+
+  static <T> T update(Object source, T target) throws IOException {
+    return Holder.HELPER.update(source, target);
+  }
+
+  static <T> T update(String json, T target) throws IOException {
+    return Holder.HELPER.update(json, target);
+  }
+
   static String stringify(Object o) {
     return Holder.HELPER.stringify(o, false);
   }
@@ -96,7 +108,6 @@ public interface JSON {
   }
 
   /** Helper wrapper of {@link ObjectMapper} */
-  @FunctionalInterface
   interface Helper {
     /** @return Shared writer, this is immutable */
     default ObjectWriter writer() {
@@ -112,7 +123,7 @@ public interface JSON {
 
     /** @return Check is this string represent a JSON object */
     default boolean isValidObject(String json) {
-      if (json == null || json.length() == 0) {
+      if (json == null || json.length() < 2) {
         return false;
       }
       try {
@@ -138,15 +149,32 @@ public interface JSON {
       }
       return null;
     }
-
+    /** Parse the JSON to map */
     default Map<String, Object> toMap(String json) throws IOException {
       return mapper().readValue(json, Holder.TYPE_REF_MAP_STRING_OBJECT);
     }
 
+    /** convert the source object to given type */
+    default <T> T toObject(Object source, Class<T> type) throws IOException {
+      return mapper().convertValue(source, type);
+    }
+
+    /** Update the target object by given source */
+    default <T> T update(Object source, T target) throws IOException {
+      return mapper().updateValue(target, source);
+    }
+
+    /** Update the target object by given json */
+    default <T> T update(String json, T target) throws IOException {
+      return mapper().readerForUpdating(target).readValue(json);
+    }
+
+    /** Serialize object to string */
     default String stringify(Object o) {
       return stringify(o, false);
     }
 
+    /** Serialize object to bytes */
     default byte[] bytify(Object o) {
       return bytify(o, false);
     }
@@ -174,7 +202,7 @@ public interface JSON {
         throw throwException(e);
       }
     }
-
+    /** Deserialize the json to type */
     default <T> T parse(String json, Class<T> type) {
       try {
         return mapper().readValue(json, type);
@@ -182,7 +210,7 @@ public interface JSON {
         throw throwException(e);
       }
     }
-
+    /** Deserialize the bytes to type */
     default <T> T parse(byte[] json, Class<T> type) {
       try {
         return mapper().readValue(json, type);
@@ -191,12 +219,16 @@ public interface JSON {
       }
     }
 
+    /** Wrap the jackson exception */
     default RuntimeException throwException(Exception e) {
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException) e;
+      }
       throw new RuntimeException(e);
     }
   }
 
-  class Holder {
+  final class Holder {
 
     private static final ObjectMapper MAPPER =
         new ObjectMapper()

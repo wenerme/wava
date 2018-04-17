@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
 /**
@@ -52,6 +53,12 @@ public interface Later {
 
   /** convert {@link ListenableFuture} to CompletableFuture */
   static <T> CompletableFuture<T> toCompletableFuture(ListenableFuture<T> future) {
+    return toCompletableFuture(future, MoreExecutors.directExecutor());
+  }
+
+  /** convert {@link ListenableFuture} to CompletableFuture */
+  static <T> CompletableFuture<T> toCompletableFuture(
+      ListenableFuture<T> future, Executor executor) {
     CompletableFuture<T> completableFuture = new CompletableFuture<>();
     future.addListener(
         () -> {
@@ -61,7 +68,7 @@ public interface Later {
             completableFuture.completeExceptionally(e);
           }
         },
-        MoreExecutors.directExecutor());
+        executor);
 
     return completableFuture;
   }
