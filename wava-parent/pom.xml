@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.wenerme.wava</groupId>
     <artifactId>wava-parent</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
     <name>Wava parent</name>
     <packaging>pom</packaging>
     <properties>
@@ -29,7 +29,7 @@
             <dependency>
                 <groupId>com.github.wenerme.wava</groupId>
                 <artifactId>wava-util</artifactId>
-                <version>0.0.5-SNAPSHOT</version>
+                <version>0.0.5</version>
             </dependency>
 
             <!-- util -->
@@ -276,6 +276,6 @@
         <connection>scm:git:https://github.com/wenerme/wava.git</connection>
         <developerConnection>scm:git:https://github.com/wenerme/wava.git</developerConnection>
         <url>http://github.com/wenerme/wava</url>
-        <tag>HEAD</tag>
+        <tag>v0.0.5</tag>
     </scm>
 </project>
