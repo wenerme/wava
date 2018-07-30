@@ -10,6 +10,8 @@
     <modules>
         <module>wava-parent</module>
         <module>wava-util</module>
+        <module>wava-server</module>
+        <module>wava-vaadin</module>
     </modules>
 
     <properties>
