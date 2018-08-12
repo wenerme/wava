@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+me.wener.wava.web.springfox.SpringFoxAutoConfiguration,\
+me.wener.wava.web.WavaWebAutoConfiguration

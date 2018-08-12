@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.wenerme.wava</groupId>
+    <groupId>me.wener.wava</groupId>
     <artifactId>wava</artifactId>
     <packaging>pom</packaging>
     <version>0.0.6-SNAPSHOT</version>
@@ -13,7 +15,6 @@
         <module>wava-server</module>
         <module>wava-vaadin</module>
     </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -101,6 +102,9 @@
     </build>
 
     <distributionManagement>
+        <relocation>
+            <groupId>com.github.wenerme.wava</groupId>
+        </relocation>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -111,7 +115,7 @@
         </repository>
     </distributionManagement>
 
-    <description>GraphQL with Java</description>
+    <description>Wener with Java</description>
     <url>https://github.com/wenerme/wava</url>
 
     <licenses>
