@@ -1,12 +1,17 @@
 # Wener with Java
 
+## Utils
+
 Core utils for daily java development.
 
-## Utils
+## Server
+Spring Boot Scaffold
 
 ## Redis
 
-* Non-Blocking ByteBuf based packet parser 
+> Redis for fun
+
+* Non-Blocking ByteBuf based packet reader/writer
 
 ### Simple Server
 * me.wener.wava.redis.example.RedisSimpleServer

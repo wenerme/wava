@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>wava-parent</artifactId>
-        <groupId>com.github.wenerme.wava</groupId>
+        <groupId>me.wener.wava</groupId>
         <version>0.0.6-SNAPSHOT</version>
         <relativePath>../wava-parent</relativePath>
     </parent>
@@ -32,7 +32,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.wenerme.wava</groupId>
+            <groupId>me.wener.wava</groupId>
             <artifactId>wava-server</artifactId>
         </dependency>
         <dependency>
