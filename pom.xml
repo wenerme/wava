@@ -14,6 +14,7 @@
         <module>wava-util</module>
         <module>wava-server</module>
         <module>wava-vaadin</module>
+        <module>wava-redis</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
