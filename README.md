@@ -1,17 +1,28 @@
 # Wener with Java
 
-## Utils
+## Common
 
-Core utils for daily java development.
+> Common core utils for daily java development.
 
-## Server
-Spring Boot Scaffold
+## Boot
+
+> Spring Boot Scaffold
+
+## Vaadin
+
+> Vaadin utils & auto-configuration
 
 ## Redis
 
 > Redis for fun
 
 * Non-Blocking ByteBuf based packet reader/writer
+* Normal redis server handler
+* [ ] Redis command execution framework
+* [ ] Redis command parser
+* [ ] RDB codec
+* [ ] PSYNC handler
+* [ ] Cluster protocol codec
 
 ### Simple Server
 * me.wener.wava.redis.example.RedisSimpleServer
