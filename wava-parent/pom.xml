@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.3.RELEASE</version>
+        <version>2.0.4.RELEASE</version>
         <relativePath />
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -36,12 +36,12 @@
             <!-- wava -->
             <dependency>
                 <groupId>me.wener.wava</groupId>
-                <artifactId>wava-util</artifactId>
+                <artifactId>wava-common</artifactId>
                 <version>0.0.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>me.wener.wava</groupId>
-                <artifactId>wava-server</artifactId>
+                <artifactId>wava-boot</artifactId>
                 <version>0.0.6-SNAPSHOT</version>
             </dependency>
             <dependency>

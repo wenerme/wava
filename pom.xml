@@ -11,8 +11,8 @@
     <name>Wava</name>
     <modules>
         <module>wava-parent</module>
-        <module>wava-util</module>
-        <module>wava-server</module>
+        <module>wava-common</module>
+        <module>wava-boot</module>
         <module>wava-vaadin</module>
         <module>wava-redis</module>
     </modules>
