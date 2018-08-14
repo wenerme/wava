@@ -3,9 +3,11 @@ package me.wener.wava.redis.example;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import me.wener.wava.redis.proto.PacketType;
 import me.wener.wava.redis.proto.ProtoReader;
 import me.wener.wava.redis.proto.ProtoWriter;
@@ -16,6 +18,7 @@ import me.wener.wava.redis.proto.RedisProtos;
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 2018/8/13
  */
+@Slf4j
 public class RedisProtoHandler extends ChannelInboundHandlerAdapter { // (1)
 
   private static final RedisPacket ok = RedisProtos.ok();
@@ -23,16 +26,22 @@ public class RedisProtoHandler extends ChannelInboundHandlerAdapter { // (1)
   private ProtoReader reader;
   private ProtoWriter writer;
   private Map<String, Object> store = new HashMap<>();
+  private ByteBuf buf;
 
   @Override
   public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    buf = ctx.alloc().buffer();
+
     reader = new ProtoReader();
     writer = new ProtoWriter();
+    reader.setBuf(buf);
   }
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) throws IOException { // (2)
-    reader.setBuf((ByteBuf) msg);
+  public void channelRead(ChannelHandlerContext ctx, Object msg) throws IOException {
+    buf.writeBytes((ByteBuf) msg);
+    ReferenceCountUtil.release(msg);
+
     RedisPacket pack = reader.read();
     if (pack == null) {
       return;
@@ -66,7 +75,8 @@ public class RedisProtoHandler extends ChannelInboundHandlerAdapter { // (1)
         }
         break;
       default:
-        response = RedisProtos.error("unknown command '%s'", command);
+        response = RedisProtos.err("unknown command '%s'", command);
+        log.info("UNKNWN {}", command);
         break;
     }
 

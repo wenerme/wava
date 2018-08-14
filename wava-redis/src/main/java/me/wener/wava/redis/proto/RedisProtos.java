@@ -43,7 +43,11 @@ public interface RedisProtos {
         .setError("WRONGTYPE Operation against a key holding the wrong kind of value");
   }
 
-  static RedisPacket error(String format, Object... args) {
+  static RedisPacket wrongArgument(String command) {
+    return err("wrong number of arguments for '%s' command", command);
+  }
+
+  static RedisPacket err(String format, Object... args) {
     return error("ERR", format, args);
   }
 
@@ -70,5 +74,9 @@ public interface RedisProtos {
                 integer(firstKeyPosition),
                 integer(lastKeyPosition),
                 integer(repeatKeyStep)));
+  }
+
+  static RedisPacket nil() {
+    return new RedisPacket().setType(PacketType.NULL_BULK_STRING);
   }
 }

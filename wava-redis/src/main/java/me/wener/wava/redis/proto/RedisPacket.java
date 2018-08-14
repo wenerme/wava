@@ -33,4 +33,11 @@ public class RedisPacket {
   private Integer integer;
   private CharSequence error;
   private List<RedisPacket> array;
+
+  public String asString() {
+    if (string == null) {
+      return null;
+    }
+    return string.toString();
+  }
 }

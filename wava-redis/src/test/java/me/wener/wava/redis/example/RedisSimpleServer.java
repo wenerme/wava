@@ -8,6 +8,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import me.wener.wava.redis.proto.RedisPacketCodec;
 
 /**
  * @author <a href=http://github.com/wenerme>wener</a>
@@ -32,7 +33,7 @@ public class RedisSimpleServer {
               new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                  ch.pipeline().addLast(new RedisProtoHandler());
+                  ch.pipeline().addLast(new RedisPacketCodec(), new SimpleHandler());
                 }
               })
           .option(ChannelOption.SO_BACKLOG, 128)

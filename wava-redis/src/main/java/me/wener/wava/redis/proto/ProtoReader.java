@@ -56,6 +56,10 @@ public class ProtoReader {
   }
 
   private RedisPacket pop() {
+    if (current == null) {
+      // unexpected
+      throw new AssertionError("unexpected null current");
+    }
     switch (current.getType()) {
       case BULK_STRING:
         if (current.getString() == null
