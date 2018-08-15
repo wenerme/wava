@@ -1,6 +1,7 @@
 package me.wener.wava.data.repo;
 
 import java.io.Serializable;
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -9,4 +10,10 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @since 2017/3/26
  */
 @NoRepositoryBean
-public interface BaseRepository<T, PK extends Serializable> extends CrudRepository<T, PK> {}
+public interface BaseRepository<T, PK extends Serializable> extends CrudRepository<T, PK> {
+  /** {@inheritDoc} */
+  List<T> findAll();
+
+  /** {@inheritDoc} */
+  List<T> findAllById(Iterable<PK> ids);
+}

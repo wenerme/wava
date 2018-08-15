@@ -24,30 +24,56 @@ public interface BaseQueryRepository<T, PK extends Serializable>
         QuerydslPredicateExecutor<T>,
         QueryByExampleExecutor<T> {
 
-  // 底层是返回的 List
+  // region page & sort
+
+  /**
+   * List page without count
+   *
+   * @param pageable
+   * @return a page of data
+   */
+  List<T> listAll(Pageable pageable);
+
+  /** {@inheritDoc} */
+  @Override
+  List<T> findAll(Sort sort);
+
+  // endregion
+
   // region QueryDSL List
 
+  /** {@inheritDoc} */
+  @Override
   List<T> findAll(Predicate predicate);
-
+  /** {@inheritDoc} */
+  @Override
   List<T> findAll(Predicate predicate, Sort sort);
-
+  /** {@inheritDoc} */
+  @Override
   List<T> findAll(Predicate predicate, OrderSpecifier<?>... orders);
-
+  /** {@inheritDoc} */
+  @Override
   List<T> findAll(OrderSpecifier<?>... orders);
 
   // endregion
 
   default List<T> listAll(Predicate predicate, Pageable pageable) {
-    // FIXME 避免 count
+    // FIXME avoid count
     return findAll(predicate, pageable).getContent();
   }
 
   // region IsPredicate
   default List<T> findAll(IsPredicate predicate) {
+    if (predicate == null) {
+      return findAll();
+    }
     return findAll(predicate.toPredicate());
   }
 
   default Page<T> findAll(IsPredicate predicate, Pageable pageable) {
+    if (predicate == null) {
+      return findAll(pageable);
+    }
     return findAll(predicate.toPredicate(), pageable);
   }
   // endregion

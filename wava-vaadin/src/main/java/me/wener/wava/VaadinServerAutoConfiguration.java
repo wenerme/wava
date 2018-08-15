@@ -1,6 +1,6 @@
 package me.wener.wava;
 
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.SpringComponent;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2018/6/12
  */
 @Configuration
-@ConditionalOnClass(TextField.class)
+@ConditionalOnClass(SpringComponent.class)
 @Slf4j
 public class VaadinServerAutoConfiguration {
   @PostConstruct
