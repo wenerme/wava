@@ -12,9 +12,11 @@
     <modules>
         <module>wava-parent</module>
         <module>wava-common</module>
-        <module>wava-boot</module>
-        <module>wava-vaadin</module>
         <module>wava-redis</module>
+        <module>wava-boot</module>
+        <module>wava-boot-vaadin</module>
+        <module>wava-boot-jpa</module>
+        <module>wava-boot-postgresql</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

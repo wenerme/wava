@@ -10,8 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wava-vaadin</artifactId>
-    <name>Wava Vaadin</name>
+    <artifactId>wava-boot-vaadin</artifactId>
+    <name>Wava Boot Vaadin</name>
 
     <properties>
         <!-- vaadin -->
