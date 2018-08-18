@@ -13,6 +13,7 @@
         <module>wava-parent</module>
         <module>wava-common</module>
         <module>wava-redis</module>
+        <module>wava-call</module>
         <module>wava-boot</module>
         <module>wava-boot-vaadin</module>
         <module>wava-boot-jpa</module>

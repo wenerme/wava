@@ -12,6 +12,22 @@
 
 > Vaadin utils & auto-configuration
 
+## Call
+
+* An
+    * Ease enough
+    * Fast enough
+    * Language agnostic
+* Rpc protocol
+* With
+    * WebSocket
+* Support
+* Can generate client stub from Java to
+    * [ ] Go
+    * [ ] Dart
+        * Use in flutter
+
+
 ## Redis
 
 > Redis for fun
