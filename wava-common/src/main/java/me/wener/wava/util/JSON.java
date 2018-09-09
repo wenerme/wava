@@ -1,24 +1,19 @@
 package me.wener.wava.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
+import me.wener.wava.util.jackson.ObjectMapperHelper;
 
 /**
- * JSON utils
+ * JSON utils for Jackson
  *
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 16/12/17
@@ -26,232 +21,107 @@ import javax.annotation.Nullable;
 public interface JSON {
 
   /** Create a helper */
-  static JSON.Helper help(ObjectMapper mapper) {
+  static ObjectMapperHelper help(ObjectMapper mapper) {
     return () -> mapper;
   }
 
   /** @return Check is this string represent a JSON object */
   static boolean isValidObject(String json) {
-    return Holder.HELPER.isValidObject(json);
+    return Holder.helper().isValidObject(json);
   }
 
   /** @return null for invalid json */
   @Nullable
   static JsonNodeType getJsonType(String json) {
-    return Holder.HELPER.getJsonType(json);
+    return Holder.helper().getJsonType(json);
   }
 
+  /** @see ObjectMapperHelper#toMap(String) */
   static Map<String, Object> toMap(String json) throws IOException {
-    return Holder.HELPER.toMap(json);
+    return Holder.helper().toMap(json);
   }
 
+  /** @see ObjectMapperHelper#toMap(Object) */
+  static Map<String, Object> toMap(Object source) throws IOException {
+    return Holder.helper().toMap(source);
+  }
+
+  /** @see ObjectMapperHelper#toObject(Object,Class) */
   static <T> T toObject(Object source, Class<T> type) throws IOException {
-    return Holder.HELPER.toObject(source, type);
+    return Holder.helper().toObject(source, type);
   }
 
+  /** @see ObjectMapperHelper#update(Object,T) */
   static <T> T update(Object source, T target) throws IOException {
-    return Holder.HELPER.update(source, target);
+    return Holder.helper().update(source, target);
   }
 
+  /** @see ObjectMapperHelper#update(String,T) */
   static <T> T update(String json, T target) throws IOException {
-    return Holder.HELPER.update(json, target);
+    return Holder.helper().update(json, target);
   }
 
+  /** @see ObjectMapperHelper#stringify(Object) */
   static String stringify(Object o) {
-    return Holder.HELPER.stringify(o, false);
+    return Holder.helper().stringify(o, false);
   }
 
+  /** @see ObjectMapperHelper#bytify(Object) */
   static byte[] bytify(Object o) {
-    return Holder.HELPER.bytify(o, false);
+    return Holder.helper().bytify(o, false);
   }
 
+  /** @see ObjectMapperHelper#bytify(Object,boolean) */
   static byte[] bytify(Object o, boolean pretty) {
-    try {
-      if (pretty) {
-        return Holder.PRETTY_WRITER.writeValueAsBytes(o);
-      } else {
-        return Holder.MAPPER.writeValueAsBytes(o);
-      }
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
+    return Holder.helper().bytify(o, pretty);
   }
 
+  /** @see ObjectMapperHelper#stringify(Object,boolean) */
   static String stringify(Object o, boolean pretty) {
-    try {
-      if (pretty) {
-        return Holder.PRETTY_WRITER.writeValueAsString(o);
-      } else {
-        return Holder.MAPPER.writeValueAsString(o);
-      }
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
+    return Holder.helper().stringify(o, pretty);
   }
 
+  /** @see ObjectMapperHelper#parse(String, Class) */
   static <T> T parse(String json, Class<T> type) {
-    return Holder.HELPER.parse(json, type);
+    return Holder.helper().parse(json, type);
   }
 
+  /** @see ObjectMapperHelper#parse(byte[], Class) */
   static <T> T parse(byte[] json, Class<T> type) {
-    return Holder.HELPER.parse(json, type);
+    return Holder.helper().parse(json, type);
   }
 
-  /** @return Shared writer, this is immutable */
+  /** @see ObjectMapperHelper#writer() */
   static ObjectWriter writer() {
-    return Holder.HELPER.writer();
+    return Holder.helper().writer();
   }
 
-  /** @return Shared reader, this is immutable */
+  /** @see ObjectMapperHelper#reader() () */
   static ObjectReader reader() {
-    return Holder.HELPER.reader();
+    return Holder.helper().reader();
   }
 
-  /** Helper wrapper of {@link ObjectMapper} */
-  interface Helper {
-    /** @return Shared writer, this is immutable */
-    default ObjectWriter writer() {
-      return mapper().writer();
-    }
+  /** Set to the new mapper */
+  static ObjectMapper use(ObjectMapper mapper) {
+    return Holder.MAPPER_REF.getAndSet(mapper);
+  }
 
-    /** @return Shared reader, this is immutable */
-    default ObjectReader reader() {
-      return mapper().reader();
-    }
-
-    ObjectMapper mapper();
-
-    /** @return Check is this string represent a JSON object */
-    default boolean isValidObject(String json) {
-      if (json == null || json.length() < 2) {
-        return false;
-      }
-      try {
-        JsonNode node = mapper().readTree(json);
-        return node.isObject();
-      } catch (IOException e) {
-        // ignored
-      }
-      return false;
-    }
-
-    /** @return null for invalid json */
-    @Nullable
-    default JsonNodeType getJsonType(String json) {
-      if (json == null || json.length() == 0) {
-        return null;
-      }
-      try {
-        JsonNode node = mapper().readTree(json);
-        return node.getNodeType();
-      } catch (IOException e) {
-        // ignored
-      }
-      return null;
-    }
-    /** Parse the JSON to map */
-    default Map<String, Object> toMap(String json) throws IOException {
-      return mapper().readValue(json, Holder.TYPE_REF_MAP_STRING_OBJECT);
-    }
-
-    /** convert the source object to given type */
-    default <T> T toObject(Object source, Class<T> type) throws IOException {
-      return mapper().convertValue(source, type);
-    }
-
-    /** Update the target object by given source */
-    default <T> T update(Object source, T target) throws IOException {
-      return mapper().updateValue(target, source);
-    }
-
-    /** Update the target object by given json */
-    default <T> T update(String json, T target) throws IOException {
-      return mapper().readerForUpdating(target).readValue(json);
-    }
-
-    /** Serialize object to string */
-    default String stringify(Object o) {
-      return stringify(o, false);
-    }
-
-    /** Serialize object to bytes */
-    default byte[] bytify(Object o) {
-      return bytify(o, false);
-    }
-
-    default byte[] bytify(Object o, boolean pretty) {
-      try {
-        if (pretty) {
-          return mapper().writerWithDefaultPrettyPrinter().writeValueAsBytes(o);
-        } else {
-          return mapper().writeValueAsBytes(o);
-        }
-      } catch (JsonProcessingException e) {
-        throw throwException(e);
-      }
-    }
-
-    default String stringify(Object o, boolean pretty) {
-      try {
-        if (pretty) {
-          return mapper().writerWithDefaultPrettyPrinter().writeValueAsString(o);
-        } else {
-          return mapper().writeValueAsString(o);
-        }
-      } catch (JsonProcessingException e) {
-        throw throwException(e);
-      }
-    }
-    /** Deserialize the json to type */
-    default <T> T parse(String json, Class<T> type) {
-      try {
-        return mapper().readValue(json, type);
-      } catch (IOException e) {
-        throw throwException(e);
-      }
-    }
-    /** Deserialize the bytes to type */
-    default <T> T parse(byte[] json, Class<T> type) {
-      try {
-        return mapper().readValue(json, type);
-      } catch (IOException e) {
-        throw throwException(e);
-      }
-    }
-
-    /** Wrap the jackson exception */
-    default RuntimeException throwException(Exception e) {
-      if (e instanceof RuntimeException) {
-        throw (RuntimeException) e;
-      }
-      throw new RuntimeException(e);
-    }
+  static ObjectMapper mapper() {
+    return Holder.helper().mapper();
   }
 
   final class Holder {
+    private static final AtomicReference<ObjectMapper> MAPPER_REF =
+        new AtomicReference<>(
+            new ObjectMapper()
+                .findAndRegisterModules()
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false));
 
-    private static final ObjectMapper MAPPER =
-        new ObjectMapper()
-            .findAndRegisterModules()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private static final JSON.Helper HELPER = help(MAPPER);
-    private static final ObjectWriter PRETTY_WRITER = MAPPER.writerWithDefaultPrettyPrinter();
-    private static final TypeReference<Map<String, Object>> TYPE_REF_MAP_STRING_OBJECT =
-        new TypeReference<Map<String, Object>>() {};
-  }
+    private static final ObjectMapperHelper HELPER = MAPPER_REF::get;
 
-  /**
-   * Deserialize the node to a string field, reverse of the {@link
-   * com.fasterxml.jackson.annotation.JsonRawValue} operation. Usage {@code @JsonDeserialize(using =
-   * JSON.JsonRawValueDeserializer.class)}
-   */
-  class JsonRawValueDeserializer extends JsonDeserializer<String> {
-
-    @Override
-    public String deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-      TreeNode tree = jp.getCodec().readTree(jp);
-      return tree.toString();
+    private static ObjectMapperHelper helper() {
+      return HELPER;
     }
   }
 }
