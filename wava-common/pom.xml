@@ -67,9 +67,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <relocation>
-            <artifactId>wava-util</artifactId>
-        </relocation>
-    </distributionManagement>
 </project>

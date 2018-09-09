@@ -161,10 +161,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <relocation>
-            <artifactId>wava-server</artifactId>
-        </relocation>
-    </distributionManagement>
-
 </project>

@@ -105,9 +105,6 @@
     </build>
 
     <distributionManagement>
-        <relocation>
-            <groupId>com.github.wenerme.wava</groupId>
-        </relocation>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
