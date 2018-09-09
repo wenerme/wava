@@ -1,4 +1,4 @@
-package me.wener.wava.redis.proto;
+package me.wener.wava.redis.resp2;
 
 import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;

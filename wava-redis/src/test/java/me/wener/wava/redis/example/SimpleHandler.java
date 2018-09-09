@@ -5,9 +5,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import me.wener.wava.redis.proto.PacketType;
-import me.wener.wava.redis.proto.RedisPacket;
-import me.wener.wava.redis.proto.RedisProtos;
+import me.wener.wava.redis.resp2.PacketType;
+import me.wener.wava.redis.resp2.RedisPacket;
+import me.wener.wava.redis.resp2.RedisProtos;
 
 /**
  * @author <a href=http://github.com/wenerme>wener</a>

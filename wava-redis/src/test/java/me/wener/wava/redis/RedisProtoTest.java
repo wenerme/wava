@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import me.wener.wava.redis.proto.PacketType;
-import me.wener.wava.redis.proto.ProtoReader;
-import me.wener.wava.redis.proto.ProtoWriter;
-import me.wener.wava.redis.proto.RedisPacket;
+import me.wener.wava.redis.resp2.PacketType;
+import me.wener.wava.redis.resp2.ProtoReader;
+import me.wener.wava.redis.resp2.ProtoWriter;
+import me.wener.wava.redis.resp2.RedisPacket;
 import org.junit.Test;
 
 /**

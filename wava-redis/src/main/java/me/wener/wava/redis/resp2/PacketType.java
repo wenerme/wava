@@ -1,4 +1,4 @@
-package me.wener.wava.redis.proto;
+package me.wener.wava.redis.resp2;
 
 /**
  * @author <a href=http://github.com/wenerme>wener</a>

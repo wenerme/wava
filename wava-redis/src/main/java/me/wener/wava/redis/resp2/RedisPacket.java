@@ -1,4 +1,4 @@
-package me.wener.wava.redis.proto;
+package me.wener.wava.redis.resp2;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

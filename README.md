@@ -1,5 +1,12 @@
 # Wener with Java
 
+## Get started
+
+```bash
+# Local development
+mvn install -DskipTests -Dgpg.skip
+```
+
 ## Common
 
 > Common core utils for daily java development.
@@ -7,6 +14,13 @@
 ## Boot
 
 > Spring Boot Scaffold
+
+* wava-boot-jpa
+    * With JPA Dependency
+* wava-boot-postgresql
+    * With PostgreSQL Dependency
+* wava-boot-vaadin
+    * Auto config for vaadin
 
 ## Vaadin
 
