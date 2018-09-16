@@ -1,5 +1,7 @@
 package me.wener.wava.web.support;
 
+import lombok.extern.slf4j.Slf4j;
+import me.wener.wava.error.Errors;
 import me.wener.wava.web.Current;
 import me.wener.wava.web.Currents;
 import org.springframework.core.MethodParameter;
@@ -14,6 +16,7 @@ import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumen
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 2017/4/20
  */
+@Slf4j
 public class CurrentMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
   @Override
@@ -39,11 +42,13 @@ public class CurrentMethodArgumentResolver extends AbstractNamedValueMethodArgum
   @Override
   protected void handleMissingValue(String name, MethodParameter parameter) {
     // AuthenticationCredentialsNotFoundException
-    throw new RuntimeException(
-        String.format(
-            "Required current %s not found for %s.%s",
-            parameter.getParameterType().getSimpleName(),
-            parameter.getMethod().getDeclaringClass().getSimpleName(),
-            parameter.getMethod().getName()));
+    log.error(
+        "Required current {} not found for {}.{}",
+        parameter.getParameterType().getSimpleName(),
+        parameter.getMethod() == null
+            ? "UNKNOWN"
+            : parameter.getMethod().getDeclaringClass().getSimpleName(),
+        parameter.getMethod() == null ? "UNKNOWN" : parameter.getMethod().getName());
+    throw Errors.unauthorized().asException("缺少必要的授权信息");
   }
 }

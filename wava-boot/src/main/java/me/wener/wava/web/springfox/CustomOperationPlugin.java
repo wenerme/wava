@@ -1,10 +1,10 @@
 package me.wener.wava.web.springfox;
 
-import com.google.common.collect.Sets;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.joor.Reflect;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -21,9 +21,10 @@ import springfox.documentation.spi.service.contexts.OperationContext;
 
 /** 移除不要的参数 */
 @Order(Ordered.LOWEST_PRECEDENCE)
+@RequiredArgsConstructor
 class CustomOperationPlugin implements OperationBuilderPlugin {
 
-  private static final Set<Class<?>> ignoredAnnotation = Sets.newHashSet();
+  private final Set<Class<?>> ignoredAnnotation;
 
   @Override
   public void apply(OperationContext context) {
@@ -34,7 +35,7 @@ class CustomOperationPlugin implements OperationBuilderPlugin {
 
       // 为 Pageable 添加参数
       if (p.getParameterType().isInstanceOf(Pageable.class)) {
-        parameters.addAll(Swaggers.pageableParameters());
+        parameters.addAll(SpringFoxes.pageableParameters());
 
         // 将对象构建为 query 参数后, 移除原有的参数
         parameters.removeIf(
@@ -76,7 +77,7 @@ class CustomOperationPlugin implements OperationBuilderPlugin {
           ReflectionUtils.doWithFields(
               type,
               f -> {
-                ApiBuilder.buildParameter(f, builder).ifPresent(parameters::add);
+                SpringFoxBuilder.buildParameter(f, builder).ifPresent(parameters::add);
               });
           // 将对象构建为 query 参数后, 移除原有的参数
           parameters.removeIf(

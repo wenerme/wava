@@ -22,13 +22,13 @@ import springfox.documentation.swagger.schema.ApiModelProperties;
  * @author <a href=http://github.com/wenerme>wener</a>
  * @since 2017/3/23
  */
-class ApiBuilder {
+class SpringFoxBuilder {
 
   static LoadingCache<Class<?>, CharSequence> enumDescCache =
       Caffeine.newBuilder()
           .maximumSize(100)
           .expireAfterWrite(1, TimeUnit.MINUTES)
-          .build(ApiBuilder::doBuildEnumDescription);
+          .build(SpringFoxBuilder::doBuildEnumDescription);
   private static ImmutableMap<Class, ModelRef> TYPE_TO_MODELREF;
 
   static {
@@ -44,7 +44,7 @@ class ApiBuilder {
         .put(double.class, new ModelRef("double"))
         .put(float.class, new ModelRef("float"));
     builder.put(String.class, new ModelRef("string"));
-    ApiBuilder.TYPE_TO_MODELREF = builder.build();
+    SpringFoxBuilder.TYPE_TO_MODELREF = builder.build();
   }
 
   static ModelReference buildModelRef(Class<?> type) {

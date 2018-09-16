@@ -29,7 +29,7 @@ class CustomModelPropertyBuilderPlugin implements ModelPropertyBuilderPlugin {
           context.getBuilder().isHidden(true);
           return;
         }
-        ApiBuilder.buildDescription(prop.getField().getAnnotated())
+        SpringFoxBuilder.buildDescription(prop.getField().getAnnotated())
             .map(v -> Reflect.on(context.getBuilder()).get("description") + " " + v.toString())
             .ifPresent(v -> context.getBuilder().description(v));
       }

@@ -2,6 +2,7 @@ package me.wener.wava.web.springfox;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -43,8 +44,8 @@ public class SpringFoxAutoConfiguration {
   }
 
   @Bean
-  public CustomOperationPlugin customOperationPlugin() {
-    return new CustomOperationPlugin();
+  public CustomOperationPlugin customOperationPlugin(SpringFoxProperties properties) {
+    return new CustomOperationPlugin(Sets.newHashSet(properties.getIgnoreParameterAnnotations()));
   }
 
   @Bean

@@ -1,5 +1,6 @@
 package me.wener.wava.web.springfox;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,4 +31,6 @@ public class SpringFoxProperties {
   private String basePath = "/";
   /** 不为这部分接口生成文档, 参数为前缀形式,例如 /a 会匹配 /a/b/c */
   private List<String> exclude;
+
+  private List<Class<? extends Annotation>> ignoreParameterAnnotations;
 }

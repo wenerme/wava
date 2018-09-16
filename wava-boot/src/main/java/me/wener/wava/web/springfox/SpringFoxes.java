@@ -8,7 +8,7 @@ import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.service.contexts.ParameterContext;
 
 /** Swagger 辅助操作 */
-public interface Swaggers {
+public interface SpringFoxes {
 
   static void ignore(ParameterContext parameterContext) {
     //            parameterContext.parameterBuilder().name("");
@@ -31,7 +31,7 @@ public interface Swaggers {
                   .parameterType("query")
                   .name("page")
                   .modelRef(new ModelRef("int"))
-                  .description("获取获取的页 (0..N).")
+                  .description("获取的页 (0..N).")
                   .build(),
               builder
                   .parameterType("query")
