@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
 import org.springframework.data.envers.repository.support.ReflectionRevisionEntityInformation;
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
-import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.history.RevisionRepository;
@@ -86,21 +84,6 @@ public class EnversQuerydslRevisionRepositoryFactoryBean<
           DefaultRevisionEntity.class.equals(revisionEntityClass)
               ? new DefaultRevisionEntityInformation()
               : new ReflectionRevisionEntityInformation(revisionEntityClass);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.jpa.repository.support.JpaRepositoryFactory#getTargetRepository(org.springframework.data.repository.core.RepositoryMetadata, javax.persistence.EntityManager)
-     */
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected EnverQuerydslJpaRepository getTargetRepository(RepositoryInformation information) {
-
-      JpaEntityInformation<T, Object> entityInformation =
-          (JpaEntityInformation<T, Object>) getEntityInformation(information.getDomainType());
-
-      return new EnverQuerydslJpaRepository(
-          entityInformation, entityManager, revisionEntityInformation);
     }
 
     /*
