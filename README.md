@@ -26,6 +26,17 @@ mvn install -DskipTests -Dgpg.skip
 
 > Vaadin utils & auto-configuration
 
+## Wava Maven Plugin
+* AppendingPatternTransformer
+    * Merge resource by appending like [AppendingTransformer](https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#AppendingTransformer)
+    * The resource config is a regex
+```xml
+<!-- Merge all services -->
+<transformer implementation="me.wener.wava.shade.AppendingPatternTransformer">
+  <resource>META-INF/services/me/wener/.*</resource>
+</transformer>
+```
+
 ## Call
 
 * An

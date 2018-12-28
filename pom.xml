@@ -16,6 +16,7 @@
         <module>wava-boot-vaadin</module>
         <module>wava-boot-jpa</module>
         <module>wava-boot-postgresql</module>
+        <module>wava-maven-plugin</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
