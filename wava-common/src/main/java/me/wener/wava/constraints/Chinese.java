@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import me.wener.wava.constraints.support.ChineseConstraintValidator;
 
 /**
  * @author <a href=http://github.com/wenerme>wener</a>
@@ -28,7 +29,7 @@ import javax.validation.ReportAsSingleViolation;
 @Constraint(validatedBy = ChineseConstraintValidator.class)
 public @interface Chinese {
 
-  String message() default "{com.github.wenerme.wava.constraints.Chinese.message}";
+  String message() default "{me.wener.wava.constraints.Chinese.message}";
 
   Class<?>[] groups() default {};
 

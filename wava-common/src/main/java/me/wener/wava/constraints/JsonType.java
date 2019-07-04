@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import me.wener.wava.constraints.support.JsonTypeConstraintValidator;
 
 /**
  * 验证字符串是否为合法的 Json 对象字符串, 如果是 Json 数组或字符等其他类型,也不通过
@@ -30,7 +31,7 @@ import javax.validation.ReportAsSingleViolation;
 @Constraint(validatedBy = JsonTypeConstraintValidator.class)
 public @interface JsonType {
 
-  String message() default "{com.github.wenerme.wava.constraints.JsonType.message}";
+  String message() default "{me.wener.wava.constraints.JsonType.message}";
 
   Class<?>[] groups() default {};
 

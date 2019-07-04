@@ -2,7 +2,6 @@ package me.wener.wava.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,7 +34,7 @@ public interface JsonMapper {
       return null;
     }
     try {
-      return JSON.reader().treeToValue(s, type);
+      return JSON.mapper().treeToValue(s, type);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("convert json node to value failed", e);
     }
@@ -46,11 +45,7 @@ public interface JsonMapper {
     if (s == null) {
       return null;
     }
-    try {
-      return JSON.toObject(s, JsonNode.class);
-    } catch (IOException e) {
-      throw new RuntimeException("convert to json node failed", e);
-    }
+    return JSON.toObject(s, JsonNode.class);
   }
 
   @Qualifier

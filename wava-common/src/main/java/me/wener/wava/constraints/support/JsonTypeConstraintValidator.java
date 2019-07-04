@@ -1,4 +1,4 @@
-package me.wener.wava.constraints;
+package me.wener.wava.constraints.support;
 
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.google.common.collect.ImmutableSet;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import me.wener.wava.constraints.JsonType;
 import me.wener.wava.util.JSON;
 
 /**

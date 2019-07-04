@@ -49,10 +49,6 @@ public interface Lambdas {
     return map == null ? Collections.emptyMap() : map;
   }
 
-  //    static boolean isEmpty(Consumer<?> v) {
-  //        return v == Holder.EMPTY_CONSUMER;
-  //    }
-
   /** Create stream for iterable */
   static <T> Stream<T> stream(Iterable<T> iterable) {
     if (iterable == null) {
@@ -209,7 +205,6 @@ public interface Lambdas {
   }
 
   class Holder {
-
     private static final Consumer EMPTY_CONSUMER = v -> {};
     private static final BiConsumer EMPTY_BI_CONSUMER = (a, b) -> {};
   }

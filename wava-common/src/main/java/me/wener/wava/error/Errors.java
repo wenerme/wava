@@ -106,10 +106,15 @@ public interface Errors {
     return Holder.GONE;
   }
 
+  static ErrorDetail badJson() {
+    return Holder.BAD_JSON;
+  }
+
   @UtilityClass
   class Holder {
 
     // General errors
+    private static final ErrorDetail BAD_JSON = with(400, "错误的JSON数据");
     private static final ErrorDetail BAD_REQUEST = with(400, "错误的请求");
     private static final ErrorDetail UNAUTHORIZED = with(401, "未授权访问");
     private static final ErrorDetail FORBIDDEN = with(403, "拒绝访问");

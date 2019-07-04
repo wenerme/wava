@@ -1,27 +1,20 @@
 package me.wener.wava.util.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.util.Map;
 import javax.annotation.Nullable;
+import me.wener.wava.error.Errors;
+import me.wener.wava.util.JSON;
 
 /** Helper wrapper of {@link ObjectMapper} */
 public interface ObjectMapperHelper {
-  /** @return Shared writer, this is immutable */
-  default ObjectWriter writer() {
-    return mapper().writer();
-  }
-
-  /** @return Shared reader, this is immutable */
-  default ObjectReader reader() {
-    return mapper().reader();
-  }
 
   ObjectMapper mapper();
 
@@ -42,7 +35,7 @@ public interface ObjectMapperHelper {
   /** @return null for invalid json */
   @Nullable
   default JsonNodeType getJsonType(String json) {
-    if (json == null || json.length() == 0) {
+    if (Strings.isNullOrEmpty(json)) {
       return null;
     }
     try {
@@ -54,29 +47,63 @@ public interface ObjectMapperHelper {
     return null;
   }
   /** Parse the JSON to map */
-  default Map<String, Object> toMap(String json) throws IOException {
-    return mapper().readValue(json, Holder.TYPE_REF_MAP_STRING_OBJECT);
+  default Map<String, Object> toMap(String json) {
+    if (Strings.isNullOrEmpty(json)) {
+      return Maps.newHashMap();
+    }
+    try {
+      return mapper().readValue(json, JSON.getTypeReferenceOfMapStringObject());
+    } catch (IOException e) {
+      throw Errors.badJson().asException(e, "failed to convert json to map");
+    }
+  }
+
+  default Map<String, Object> toMap(byte[] json) {
+    if (json == null || json.length == 0) {
+      return Maps.newHashMap();
+    }
+    try {
+      return mapper().readValue(json, JSON.getTypeReferenceOfMapStringObject());
+    } catch (IOException e) {
+      throw Errors.badJson().asException(e, "failed to convert json to map");
+    }
   }
 
   /** Convert the source to map */
-  default Map<String, Object> toMap(Object source) throws IOException {
-    return mapper().convertValue(source, Holder.TYPE_REF_MAP_STRING_OBJECT);
+  default Map<String, Object> toMap(Object source) {
+    return mapper().convertValue(source, JSON.getTypeReferenceOfMapStringObject());
   }
 
   /** convert the source object to given type */
-  default <T> T toObject(Object source, Class<T> type) throws IOException {
+  default <T> T toObject(Object source, Class<T> type) {
     return mapper().convertValue(source, type);
   }
 
   /** Update the target object by given source */
-  default <T> T update(Object source, T target) throws IOException {
-    return mapper().updateValue(target, source);
+  default <T> T update(Object source, T target) {
+    if (source == null) {
+      return target;
+    }
+    try {
+      return mapper().updateValue(target, source);
+    } catch (JsonMappingException e) {
+      throw Errors.badJson().asException(e, "failed to update source to target");
+    }
   }
 
   /** Update the target object by given json */
-  default <T> T update(String json, T target) throws IOException {
-    return mapper().readerForUpdating(target).readValue(json);
+  default <T> T update(String json, T target) {
+    if (Strings.isNullOrEmpty(json)) {
+      return target;
+    }
+    try {
+      return mapper().readerForUpdating(target).readValue(json);
+    } catch (IOException e) {
+      throw Errors.badJson().asException(e, "failed to update json source to target");
+    }
   }
+
+
 
   /** Serialize object to string */
   default String stringify(Object o) {
@@ -96,7 +123,7 @@ public interface ObjectMapperHelper {
         return mapper().writeValueAsBytes(o);
       }
     } catch (JsonProcessingException e) {
-      throw throwException(e);
+      throw Errors.badJson().asException(e, "failed to bytify json: %s", e.getMessage());
     }
   }
 
@@ -108,36 +135,29 @@ public interface ObjectMapperHelper {
         return mapper().writeValueAsString(o);
       }
     } catch (JsonProcessingException e) {
-      throw throwException(e);
+      throw Errors.badJson().asException(e, "failed to stringify json: %s", e.getMessage());
     }
   }
   /** Deserialize the json to type */
   default <T> T parse(String json, Class<T> type) {
+    if (Strings.isNullOrEmpty(json)) {
+      return null;
+    }
     try {
       return mapper().readValue(json, type);
     } catch (IOException e) {
-      throw throwException(e);
+      throw Errors.badJson().asException(e, "failed to parse json: %s", e.getMessage());
     }
   }
   /** Deserialize the bytes to type */
   default <T> T parse(byte[] json, Class<T> type) {
+    if (json == null || json.length == 0) {
+      return null;
+    }
     try {
       return mapper().readValue(json, type);
     } catch (IOException e) {
-      throw throwException(e);
+      throw Errors.badJson().asException(e, "failed to parse json bytes: %s", e.getMessage());
     }
-  }
-
-  /** Wrap the jackson exception */
-  default RuntimeException throwException(Exception e) {
-    if (e instanceof RuntimeException) {
-      throw (RuntimeException) e;
-    }
-    throw new RuntimeException(e);
-  }
-
-  final class Holder {
-    private static final TypeReference<Map<String, Object>> TYPE_REF_MAP_STRING_OBJECT =
-        new TypeReference<Map<String, Object>>() {};
   }
 }

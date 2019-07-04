@@ -14,22 +14,20 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import javax.validation.constraints.Pattern;
 
 /**
- * 验证字符串是否为合法的 Json 对象字符串, 如果是 Json 数组或字符等其他类型,也不通过
- *
  * @author <a href=http://github.com/wenerme>wener</a>
- * @since 2017/2/27
+ * @since 2019-07-05
  */
 @Documented
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 @ReportAsSingleViolation
 @Constraint(validatedBy = {})
-@JsonType(types = JsonType.Type.OBJECT)
-public @interface JsonObject {
-
-  String message() default "{me.wener.wava.constraints.JsonObject.message}";
+@Pattern(regexp = "^[0-9]+$")
+public @interface Numberic {
+  String message() default "{me.wener.wava.constraints.Numberic.message}";
 
   Class<?>[] groups() default {};
 

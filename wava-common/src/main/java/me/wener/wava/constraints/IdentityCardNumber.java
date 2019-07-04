@@ -33,7 +33,7 @@ import javax.validation.constraints.Pattern;
 @Pattern(regexp = "^\\d{14,17}X?$")
 public @interface IdentityCardNumber {
 
-  String message() default "{com.github.wenerme.wava.constraints.IdentityCardNumber.message}";
+  String message() default "{me.wener.wava.constraints.IdentityCardNumber.message}";
 
   Class<?>[] groups() default {};
 

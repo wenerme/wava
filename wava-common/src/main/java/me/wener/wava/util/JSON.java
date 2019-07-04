@@ -1,12 +1,10 @@
 package me.wener.wava.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
@@ -27,101 +25,108 @@ public interface JSON {
 
   /** @return Check is this string represent a JSON object */
   static boolean isValidObject(String json) {
-    return Holder.helper().isValidObject(json);
+    return helper().isValidObject(json);
   }
 
   /** @return null for invalid json */
   @Nullable
   static JsonNodeType getJsonType(String json) {
-    return Holder.helper().getJsonType(json);
+    return helper().getJsonType(json);
   }
 
   /** @see ObjectMapperHelper#toMap(String) */
-  static Map<String, Object> toMap(String json) throws IOException {
-    return Holder.helper().toMap(json);
+  static Map<String, Object> toMap(String json) {
+    return helper().toMap(json);
   }
 
   /** @see ObjectMapperHelper#toMap(Object) */
-  static Map<String, Object> toMap(Object source) throws IOException {
-    return Holder.helper().toMap(source);
+  static Map<String, Object> toMap(Object source) {
+    return helper().toMap(source);
   }
 
   /** @see ObjectMapperHelper#toObject(Object,Class) */
-  static <T> T toObject(Object source, Class<T> type) throws IOException {
-    return Holder.helper().toObject(source, type);
+  static <T> T toObject(Object source, Class<T> type) {
+    return helper().toObject(source, type);
   }
 
   /** @see ObjectMapperHelper#update(Object,T) */
-  static <T> T update(Object source, T target) throws IOException {
-    return Holder.helper().update(source, target);
+  static <T> T update(Object source, T target) {
+    return helper().update(source, target);
   }
 
   /** @see ObjectMapperHelper#update(String,T) */
-  static <T> T update(String json, T target) throws IOException {
-    return Holder.helper().update(json, target);
+  static <T> T update(String json, T target) {
+    return helper().update(json, target);
   }
 
   /** @see ObjectMapperHelper#stringify(Object) */
   static String stringify(Object o) {
-    return Holder.helper().stringify(o, false);
+    return helper().stringify(o, false);
   }
 
   /** @see ObjectMapperHelper#bytify(Object) */
   static byte[] bytify(Object o) {
-    return Holder.helper().bytify(o, false);
+    return helper().bytify(o, false);
   }
 
   /** @see ObjectMapperHelper#bytify(Object,boolean) */
   static byte[] bytify(Object o, boolean pretty) {
-    return Holder.helper().bytify(o, pretty);
+    return helper().bytify(o, pretty);
   }
 
   /** @see ObjectMapperHelper#stringify(Object,boolean) */
   static String stringify(Object o, boolean pretty) {
-    return Holder.helper().stringify(o, pretty);
+    return helper().stringify(o, pretty);
   }
 
   /** @see ObjectMapperHelper#parse(String, Class) */
   static <T> T parse(String json, Class<T> type) {
-    return Holder.helper().parse(json, type);
+    return helper().parse(json, type);
   }
 
   /** @see ObjectMapperHelper#parse(byte[], Class) */
   static <T> T parse(byte[] json, Class<T> type) {
-    return Holder.helper().parse(json, type);
-  }
-
-  /** @see ObjectMapperHelper#writer() */
-  static ObjectWriter writer() {
-    return Holder.helper().writer();
-  }
-
-  /** @see ObjectMapperHelper#reader() () */
-  static ObjectReader reader() {
-    return Holder.helper().reader();
+    return helper().parse(json, type);
   }
 
   /** Set to the new mapper */
   static ObjectMapper use(ObjectMapper mapper) {
-    return Holder.MAPPER_REF.getAndSet(mapper);
+    return Holder.HELPER.getAndSet(help(mapper)).mapper();
+  }
+
+  static ObjectMapperHelper use(ObjectMapperHelper helper) {
+    return Holder.HELPER.getAndSet(helper);
   }
 
   static ObjectMapper mapper() {
-    return Holder.helper().mapper();
+    return helper().mapper();
+  }
+
+  static ObjectMapperHelper helper() {
+    return Holder.HELPER.get();
+  }
+
+  static TypeReference<Map<String, Object>> getTypeReferenceOfMapStringObject() {
+    return Holder.TYPE_REF_MAP_STRING_OBJECT;
+  }
+
+  static TypeReference<Map<String, String>> getTypeReferenceOfMapStringString() {
+    return Holder.TYPE_REF_MAP_STRING_STRING;
   }
 
   final class Holder {
-    private static final AtomicReference<ObjectMapper> MAPPER_REF =
-        new AtomicReference<>(
-            new ObjectMapper()
-                .findAndRegisterModules()
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false));
+    private static final AtomicReference<ObjectMapperHelper> HELPER =
+        new AtomicReference<>(help(build()));
+    private static final TypeReference<Map<String, Object>> TYPE_REF_MAP_STRING_OBJECT =
+        new TypeReference<Map<String, Object>>() {};
+    private static final TypeReference<Map<String, String>> TYPE_REF_MAP_STRING_STRING =
+        new TypeReference<Map<String, String>>() {};
 
-    private static final ObjectMapperHelper HELPER = MAPPER_REF::get;
-
-    private static ObjectMapperHelper helper() {
-      return HELPER;
+    private static ObjectMapper build() {
+      return new ObjectMapper()
+          .findAndRegisterModules()
+          .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
   }
 }

@@ -1,7 +1,8 @@
-package me.wener.wava.constraints;
+package me.wener.wava.constraints.support;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import me.wener.wava.constraints.Chinese;
 import me.wener.wava.util.Chinesese;
 
 /**

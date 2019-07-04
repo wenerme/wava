@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import me.wener.wava.constraints.support.DomainConstraintValidator;
 
 /**
  * @author <a href=http://github.com/wenerme>wener</a>
@@ -28,7 +29,7 @@ import javax.validation.ReportAsSingleViolation;
 @Constraint(validatedBy = DomainConstraintValidator.class)
 public @interface Domain {
 
-  String message() default "{com.github.wenerme.wava.constraints.Domain.message}";
+  String message() default "{me.wener.wava.constraints.Domain.message}";
 
   Class<?>[] groups() default {};
 

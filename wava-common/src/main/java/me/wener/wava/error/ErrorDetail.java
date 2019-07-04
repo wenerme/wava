@@ -1,8 +1,6 @@
 package me.wener.wava.error;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author wener
@@ -54,15 +52,19 @@ public interface ErrorDetail {
   }
 
   default ErrorDetailException asException() {
-    return new ErrorDetailException(this.now());
+    return new ErrorDetailException(now());
   }
 
   default ErrorDetailException asException(Throwable cause) {
-    return new ErrorDetailException(this.now(), cause);
+    return new ErrorDetailException(now(), cause);
   }
 
   default ErrorDetailException asException(String message) {
     return withMessage(message).asException();
+  }
+
+  default ErrorDetailException asException(Throwable cause, String format, Object... args) {
+    return new ErrorDetailException(now().withMessage(format, args), cause);
   }
 
   default ErrorDetail check(boolean condition, String format, Object... args) {
@@ -70,14 +72,6 @@ public interface ErrorDetail {
       throw asException(String.format(format, args));
     }
     return this;
-  }
-
-  @Nonnull
-  default <T> T checkNotNull(@Nullable T v, String message) {
-    if (v == null) {
-      throw asException(message);
-    }
-    return v;
   }
 
   default ErrorDetail check(boolean condition, String message) {
