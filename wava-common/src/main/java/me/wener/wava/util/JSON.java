@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -126,6 +127,7 @@ public interface JSON {
       return new ObjectMapper()
           .findAndRegisterModules()
           .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
   }

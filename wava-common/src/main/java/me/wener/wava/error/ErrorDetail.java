@@ -63,6 +63,10 @@ public interface ErrorDetail {
     return withMessage(message).asException();
   }
 
+  default ErrorDetailException asException(String format, Object... args) {
+    return withMessage(format, args).asException();
+  }
+
   default ErrorDetailException asException(Throwable cause, String format, Object... args) {
     return new ErrorDetailException(now().withMessage(format, args), cause);
   }
