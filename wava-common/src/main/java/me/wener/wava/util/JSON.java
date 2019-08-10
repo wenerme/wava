@@ -6,9 +6,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import javax.annotation.Nullable;
+import me.wener.wava.util.jackson.DynamicTypeResolverBuilder;
 import me.wener.wava.util.jackson.ObjectMapperHelper;
 
 /**
@@ -107,6 +111,30 @@ public interface JSON {
     return Holder.HELPER.get();
   }
 
+  static <T> void registerDynamicType(
+    Class<T> base,
+    Function<T, String> typeIdGetter,
+    String typeIdProperty,
+    boolean typeIdVisible) {
+    Preconditions.checkArgument(
+      !Holder.RESOLVER.containsKey(base), "type %s already registered as dynamic", base);
+    Holder.RESOLVER.computeIfAbsent(
+      base,
+      baseType -> {
+        DynamicTypeResolverBuilder builder =
+          new DynamicTypeResolverBuilder(base, typeIdGetter, typeIdProperty, typeIdVisible);
+        builder.registerModule(mapper());
+        return builder;
+      });
+  }
+
+  static <T> void registerDynamicSubtype(
+    Class<T> baseType, String typeId, Class<? extends T> subtype) {
+    Preconditions.checkNotNull(
+      Holder.RESOLVER.get(baseType), "type %s not registered as dynamic", baseType)
+      .registerSubTypes(typeId, subtype);
+  }
+
   static TypeReference<Map<String, Object>> getTypeReferenceOfMapStringObject() {
     return Holder.TYPE_REF_MAP_STRING_OBJECT;
   }
@@ -122,6 +150,10 @@ public interface JSON {
         new TypeReference<Map<String, Object>>() {};
     private static final TypeReference<Map<String, String>> TYPE_REF_MAP_STRING_STRING =
         new TypeReference<Map<String, String>>() {};
+
+    // Only track current mapper
+    private static final Map<Class<?>, DynamicTypeResolverBuilder> RESOLVER =
+      Maps.newConcurrentMap();
 
     private static ObjectMapper build() {
       return new ObjectMapper()
