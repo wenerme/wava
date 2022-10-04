@@ -475,7 +475,7 @@
         <grpc.version>1.17.1</grpc.version>
         <netty-tcnative-boringssl-static.version>2.0.17.Final
         </netty-tcnative-boringssl-static.version>
-        <protobuf-java.version>3.6.1</protobuf-java.version>
+        <protobuf-java.version>3.16.3</protobuf-java.version>
 
         <antlr4.version>4.7.2</antlr4.version>
         <guava.version>27.0.1-jre</guava.version>
