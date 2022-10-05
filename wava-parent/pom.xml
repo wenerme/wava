@@ -480,7 +480,7 @@
         <antlr4.version>4.7.2</antlr4.version>
         <guava.version>27.0.1-jre</guava.version>
         <lombok.version>1.18.4</lombok.version>
-        <jackson.version>2.10.0</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <jodd.version>5.0.11</jodd.version>
         <springfox.version>2.9.2</springfox.version>
         <joor.version>0.9.9</joor.version>
